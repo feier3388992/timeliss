@@ -1,0 +1,22 @@
+目前最推荐的 Capacitor 框架，手把手教你用最少的代码实现打包：
+第一步：准备基础环境
+确保你的电脑上安装了 Node.js。
+去官网下载安装 Android Studio（这一步绕不开，因为最终生成 APK 需要它里面的安卓打包工具 SDK，但你不需要在里面写任何代码，装好放着就行）。
+第二步：用 Node.js 快速生成项目
+在你的 HTML 项目文件夹里打开命令行（CMD 或 PowerShell）。
+输入 npm init -y，这会生成一个基础的 package.json 配置文件。
+安装 Capacitor 的核心依赖包：
+npm install @capacitor/core @capacitor/cli @capacitor/android --save-dev
+初始化 Capacitor 项目，它会问你几个问题（App名字、包名等），直接按回车用默认的或者随便填都行：
+npx cap init
+第三步：关联安卓并放入你的网页
+告诉 Capacitor 你的 HTML 文件在哪个文件夹（假设你的 index.html 就在当前目录，如果是 www 或 dist 文件夹就填对应的名字）：
+npx cap add android
+把你的 HTML、CSS、JS 文件同步到安卓项目里：
+npx cap sync
+(注：Capacitor 默认会去读取 www 文件夹，如果你的网页不在这里面，可以在生成的 capacitor.config.ts 文件里修改 webDir 的路径)。
+第四步：一键生成 APK
+在命令行输入：npx cap open android。这会自动用 Android Studio 打开刚刚生成的安卓项目。
+等待 Android Studio 底部加载完所有依赖（第一次打开会比较慢，在自动下载东西）。
+加载完后，直接点击顶部菜单栏的 Build -> Build Bundle(s) / APK(s) -> Build APK(s)。
+等它编译完成，右下角会弹出提示，点击 locate，你的 APK 就生成好了！

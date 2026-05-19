@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>训练计时器 V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Microsoft YaHei', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            transition: right 0.3s ease;
+            z-index: 99;
+            overflow-y: auto;
+        }
+        .settings-panel.show {
+            right: 0;
+        }
+        .settings-panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .preset-btn {
+            padding: 12px 8px;
+            font-size: 0.95em;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .preset-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+        .custom-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .custom-input input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 1em;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+        .custom-input button {
+            padding: 10px 15px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .option-row input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+        .option-row label {
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        .close-settings {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .main-controls {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .main-controls h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.4em;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            transform: scale(1.02);
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            color: white;
+        }
+        .btn-stop {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+        .btn-finish {
+            background: linear-gradient(135deg, #ffe259 0%, #ffa751 100%);
+            color: white;
+        }
+        .timer-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .timer-container.settings-open {
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .timer-display {
+            font-size: 35vw;
+            font-weight: bold;
+            line-height: 1;
+            text-shadow: 0 0 100px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .timer-display.countdown {
+            color: #4ecdc4;
+        }
+        .timer-display.running {
+            color: #fff;
+            animation: runningGlow 2s infinite;
+        }
+        .timer-display.preparing {
+            color: #ff9f43;
+            animation: preparePulse 1s infinite;
+        }
+        .timer-display.finished {
+            color: #ffe66d;
+            animation: finishedPulse 0.5s infinite;
+        }
+        @keyframes runningGlow {
+            0%, 100% {
+                text-shadow: 0 0 50px rgba(78, 205, 196, 0.8), 0 0 100px rgba(78, 205, 196, 0.4);
+            }
+            50% {
+                text-shadow: 0 0 80px rgba(78, 205, 196, 1), 0 0 150px rgba(78, 205, 196, 0.6);
+            }
+        }
+        @keyframes preparePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes finishedPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .timer-label {
+            font-size: 3vw;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 20px;
+        }
+        .message {
+            font-size: 4vw;
+            margin-top: 30px;
+            color: #ffe66d;
+            text-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <button class="settings-btn" onclick="toggleSettings()">⚙</button>
+
+    <div class="settings-panel" id="settingsPanel">
+        <button class="close-settings" onclick="toggleSettings()">×</button>
+        <h2>设置训练时间</h2>
+
+        <div class="preset-grid">
+            <button class="preset-btn" onclick="selectPreset(1)">1分钟</button>
+            <button class="preset-btn" onclick="selectPreset(3)">3分钟</button>
+            <button class="preset-btn active" onclick="selectPreset(5)">5分钟</button>
+            <button class="preset-btn" onclick="selectPreset(10)">10分钟</button>
+            <button class="preset-btn" onclick="selectPreset(15)">15分钟</button>
+            <button class="preset-btn" onclick="selectPreset(20)">20分钟</button>
+            <button class="preset-btn" onclick="selectPreset(25)">25分钟</button>
+            <button class="preset-btn" onclick="selectPreset(30)">30分钟</button>
+            <button class="preset-btn" onclick="selectPreset(45)">45分钟</button>
+        </div>
+
+        <div class="custom-input">
+            <input type="number" id="customMinutes" placeholder="自定义分钟" min="1" max="180">
+            <button onclick="setCustomTime()">确定</button>
+        </div>
+
+        <div class="option-row">
+            <input type="checkbox" id="usePrepare" checked>
+            <label for="usePrepare">启用10秒准备时间</label>
+        </div>
+
+        <div class="main-controls">
+            <h3>控制</h3>
+            <button class="action-btn btn-start" id="startBtn" onclick="startTimer()">开始</button>
+            <button class="action-btn btn-stop" id="stopBtn" onclick="stopTimer()" style="display:none">停止</button>
+            <button class="action-btn btn-finish" id="finishBtn" onclick="finishNow()" style="display:none">提前完成</button>
+        </div>
+    </div>
+
+    <div class="timer-container" id="timerContainer">
+        <div class="timer-display countdown" id="timer">5:00</div>
+        <div class="timer-label" id="timerLabel">5分钟</div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        var selectedMinutes = 5;
+        var remainingSeconds = 300;
+        var timerInterval = null;
+        var isRunning = false;
+
+        function toggleSettings() {
+            var panel = document.getElementById('settingsPanel');
+            var container = document.getElementById('timerContainer');
+            panel.classList.toggle('show');
+            container.classList.toggle('settings-open');
+        }
+
+        function selectPreset(minutes) {
+            if (isRunning) return;
+            selectedMinutes = minutes;
+            remainingSeconds = minutes * 60;
+            updateDisplay();
+            var buttons = document.querySelectorAll('.preset-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            event.target.classList.add('active');
+            document.getElementById('customMinutes').value = '';
+        }
+
+        function setCustomTime() {
+            if (isRunning) return;
+            var input = document.getElementById('customMinutes');
+            var minutes = parseInt(input.value);
+            if (minutes > 0 && minutes <= 180) {
+                selectedMinutes = minutes;
+                remainingSeconds = minutes * 60;
+                updateDisplay();
+                var buttons = document.querySelectorAll('.preset-btn');
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].classList.remove('active');
+                }
+            }
+        }
+
+        function updateDisplay() {
+            var mins = Math.floor(remainingSeconds / 60);
+            var secs = remainingSeconds % 60;
+            var timeStr = mins + ':' + (secs < 10 ? '0' : '') + secs;
+            document.getElementById('timer').textContent = timeStr;
+            document.getElementById('timerLabel').textContent = selectedMinutes + '分钟';
+        }
+
+        function speak(text) {
+            if (window.speechSynthesis) {
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function formatTime(seconds) {
+            var mins = Math.floor(seconds / 60);
+            var secs = seconds % 60;
+            return mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        function hideSettings() {
+            var panel = document.getElementById('settingsPanel');
+            var container = document.getElementById('timerContainer');
+            panel.classList.remove('show');
+            container.classList.remove('settings-open');
+        }
+
+        function showSettingsPanel() {
+            var panel = document.getElementById('settingsPanel');
+            var container = document.getElementById('timerContainer');
+            panel.classList.add('show');
+            container.classList.add('settings-open');
+        }
+
+        function startTimer() {
+            if (isRunning) return;
+
+            hideSettings();
+
+            var usePrepare = document.getElementById('usePrepare').checked;
+
+            if (usePrepare) {
+                isRunning = 'preparing';
+                var prepareCount = 10;
+
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'block';
+                document.getElementById('finishBtn').style.display = 'none';
+                document.getElementById('timer').className = 'timer-display preparing';
+                document.getElementById('timerLabel').textContent = '准备阶段';
+                document.getElementById('message').textContent = '准备好！';
+                document.getElementById('timer').textContent = prepareCount;
+
+                timerInterval = setInterval(function() {
+                    prepareCount--;
+                    document.getElementById('timer').textContent = prepareCount > 0 ? prepareCount : '';
+
+                    if (prepareCount > 0) {
+                        speak(prepareCount.toString());
+                    }
+
+                    if (prepareCount <= 0) {
+                        clearInterval(timerInterval);
+                        startTraining();
+                    }
+                }, 1000);
+            } else {
+                startTraining();
+            }
+        }
+
+        function startTraining() {
+            isRunning = true;
+            remainingSeconds = selectedMinutes * 60;
+
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'block';
+            document.getElementById('finishBtn').style.display = 'block';
+            document.getElementById('timer').className = 'timer-display running';
+            document.getElementById('timerLabel').textContent = '训练中';
+            document.getElementById('message').textContent = '';
+            document.getElementById('timer').textContent = formatTime(remainingSeconds);
+
+            speak('计时开始');
+
+            var totalSeconds = selectedMinutes * 60;
+
+            timerInterval = setInterval(function() {
+                remainingSeconds--;
+                document.getElementById('timer').textContent = formatTime(remainingSeconds);
+
+                var elapsed = totalSeconds - remainingSeconds;
+
+                if (elapsed === 30) speak('半分钟');
+                else if (elapsed === 60) speak('一分钟');
+                else if (elapsed === 120) speak('两分钟');
+                else if (elapsed === 180) speak('三分钟');
+                else if (elapsed === 240) speak('四分钟');
+                else if (elapsed === 300) speak('五分钟');
+                else if (elapsed === 360) speak('六分钟');
+                else if (elapsed === 420) speak('七分钟');
+                else if (elapsed === 480) speak('八分钟');
+                else if (elapsed === 540) speak('九分钟');
+                else if (elapsed === 600) speak('十分钟');
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').className = 'timer-display finished';
+                    document.getElementById('timerLabel').textContent = '';
+                    document.getElementById('message').textContent = '恭喜完成训练！';
+                    speak('恭喜完成训练！');
+                    isRunning = false;
+                    document.getElementById('stopBtn').style.display = 'none';
+                    document.getElementById('finishBtn').style.display = 'none';
+                    document.getElementById('startBtn').style.display = 'block';
+                    document.getElementById('startBtn').textContent = '重新开始';
+                    hideSettings();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            remainingSeconds = selectedMinutes * 60;
+            updateDisplay();
+            document.getElementById('timer').className = 'timer-display countdown';
+            document.getElementById('timerLabel').textContent = selectedMinutes + '分钟';
+            document.getElementById('message').textContent = '';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('startBtn').textContent = '开始';
+            showSettingsPanel();
+        }
+
+        function finishNow() {
+            clearInterval(timerInterval);
+            document.getElementById('timer').className = 'timer-display finished';
+            document.getElementById('timerLabel').textContent = '';
+            showSettingsPanel();
+            document.getElementById('message').textContent = '恭喜完成训练！';
+            speak('恭喜完成训练！');
+            isRunning = false;
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('startBtn').textContent = '重新开始';
+        }
+    </script>
+</body>
+</html>

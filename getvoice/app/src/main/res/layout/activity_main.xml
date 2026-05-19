@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GetVoice 录音机"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未录音"
+            android:textSize="18sp"
+            android:textColor="#666666"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnStartRecording"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:text="开始录音"
+            android:textSize="18sp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@id/tvStatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnStopRecording"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:text="停止录音"
+            android:textSize="18sp"
+            android:backgroundTint="#F44336"
+            android:textColor="#FFFFFF"
+            android:enabled="false"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/btnStartRecording"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvFileInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="录音文件将保存在下方路径"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/btnStopRecording"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvFilePath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tvFileInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/etFileName"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:hint="输入新文件名（不含.mp3）"
+            android:textSize="16sp"
+            android:inputType="text"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvFilePath"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnRename"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="重命名"
+            android:textSize="16sp"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            android:enabled="false"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/etFileName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

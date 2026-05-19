@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Studio 下载</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #3ddc84;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .download-link {
+            display: block;
+            padding: 15px 20px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        .download-link:hover {
+            background: #3ddc84;
+            color: white;
+            border-color: #3ddc84;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(61, 220, 132, 0.3);
+        }
+        .description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .download-link:hover .description {
+            color: rgba(255,255,255,0.8);
+        }
+        .tip {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Android Studio 下载</h1>
+        
+        <a href="https://developer.android.google.cn/studio?hl=zh-cn" class="download-link" style="background:#e8f5e9;border-color:#3ddc84;">
+            <strong>Google 官方中国域名（推荐）</strong>
+            <div class="description">无需翻墙，直接下载最新版本</div>
+        </a>
+        
+        <a href="https://mirrors.tuna.tsinghua.edu.cn/android/studio/" class="download-link">
+            <strong>清华大学 TUNA 镜像站</strong>
+            <div class="description">国内高校镜像，速度快</div>
+        </a>
+        
+        <a href="https://www.androiddevtools.cn/android-studio" class="download-link">
+            <strong>Android Dev Tools 中文网</strong>
+            <div class="description">第三方汇总站，多版本可选</div>
+        </a>
+        
+        <a href="https://androidstudio.com.cn/download.html" class="download-link">
+            <strong>Android Studio 中文网</strong>
+            <div class="description">国内镜像站，稳定版</div>
+        </a>
+        
+        <div class="tip">
+            <strong>安装提示：</strong><br>
+            1. 下载 Windows 64位版本的安装包（.exe，约 1.4GB）<br>
+            2. 安装时一路默认即可<br>
+            3. 第一次启动会自动下载 SDK，需要耐心等待<br>
+            4. 安装完成后告诉我，继续帮你打包 APK
+        </div>
+    </div>
+</body>
+</html>

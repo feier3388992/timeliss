@@ -41,7 +41,7 @@ npx cap sync
 
 如果你觉得这个 App 有帮助，欢迎请我喝杯咖啡 ☕
 
-<img src="https://github.com/feier3388992/donate/raw/main/qrcode.png" width="200" alt="打赏二维码" />
+<img src="https://github.com/feier3388992/english-learning-system/blob/main/docs/wechat-pay.jpg" width="200" alt="打赏二维码" />
 
 > 你的支持是我持续更新的动力！
 
